@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
+//refaire la factory sans ia
+
 namespace LibraryManager.Infrastructure.DataBase;
 
 public class LibraryManagerContextFactory
   : IDesignTimeDbContextFactory<LibraryManagerContext>
 {
-  //FAIT PAR CLAUDE AVANT D'ARRETER CAR LA FLEMME
-  
   
   public LibraryManagerContext CreateDbContext(string[] args)
   {
