@@ -24,16 +24,16 @@ public class JwtProvider(IConfiguration configuration) : IJwtProvider
     SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
     
     //Identifiant de signature
-    SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
+    SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
     
     //Creation du token
-    JwtSecurityToken Token = new JwtSecurityToken(
+    JwtSecurityToken token = new JwtSecurityToken(
       issuer: configuration["Jwt:Issuer"],
       audience: configuration["Jwt:Audience"],
       claims: claims,
       expires: DateTime.UtcNow.AddHours(2),
       signingCredentials: creds
     );
-    return new JwtSecurityTokenHandler().WriteToken(Token);
+    return new JwtSecurityTokenHandler().WriteToken(token);
   }
 }

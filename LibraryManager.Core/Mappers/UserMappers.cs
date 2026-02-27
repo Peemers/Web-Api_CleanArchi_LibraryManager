@@ -13,7 +13,7 @@ public static class UserMappers
     return new User
     {
       Email = dto.Email,
-      PasswordHash = dto.PasswordHash,
+      PasswordHash = dto.Password,
       FirstName = dto.FirstName ?? string.Empty,
       LastName = dto.LastName ?? string.Empty,
     };

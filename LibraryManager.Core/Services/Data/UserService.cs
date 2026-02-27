@@ -39,13 +39,13 @@ public class UserService(
 
   public async Task<UserResponceDto> CreateByDtoAsync(RegisterRequestDto dto)
   {
-    if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
+    if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
     {
       throw new ArgumentException("un mail et un mdp sont nécessaires");
     }
 
     var userEntity = dto.ToEntity();
-    userEntity.PasswordHash = passwordHasher.Hash(dto.PasswordHash)!;
+    userEntity.PasswordHash = passwordHasher.Hash(dto.Password)!;
     var createdUser = await base.AddAsync(userEntity);
 
     return createdUser.ToResponseDto(); // Retourne le DTO
@@ -73,9 +73,12 @@ public class UserService(
 
   public async Task<Result<LoginResponceDto>> LoginAsync(LoginRequestDto dto)
   {
+    Console.WriteLine($"Tentative de login pour : {dto.Email}");
+    Console.WriteLine($"Mot de passe reçu (clair) : {dto.Password}");
+    
     User? user = await userRepository.GetUserByEmail(dto.Email);
 
-    if (user == null || !passwordHasher.Verify(dto.PasswordHash, user.PasswordHash))
+    if (user == null || !passwordHasher.Verify(dto.Password, user.PasswordHash))
     {
       return Result<LoginResponceDto>.Failure("Email ou MDP incorrect");
     }
