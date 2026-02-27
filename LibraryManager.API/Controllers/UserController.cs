@@ -29,7 +29,7 @@ public class UserController : ControllerBase
   }
 
   [HttpPost("Login")]
-  public async Task<ActionResult<UserResponceDto>> Login([FromBody] LoginRequestDto dto)
+  public async Task<ActionResult<LoginResponceDto>> Login([FromBody] LoginRequestDto dto)
   {
     var result = await _userService.LoginAsync(dto);
     if (!result.IsSuccess)
