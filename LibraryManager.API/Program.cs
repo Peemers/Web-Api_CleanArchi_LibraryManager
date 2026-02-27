@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using LibraryManager.Infrastructure.DataBase;
@@ -6,7 +7,9 @@ using LibraryManager.Core.Interfaces.Services;
 using LibraryManager.Core.Interfaces.Tools;
 using LibraryManager.Core.Services.Data;
 using LibraryManager.Core.Services.Tools;
-using LibraryManager.Infrastructure.Repositories; // Vérifie que LivreService est bien ici
+using LibraryManager.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens; // Vérifie que LivreService est bien ici
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +43,22 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+  .AddJwtBearer(options =>
+  {
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+      ValidateIssuer = true,
+      ValidateAudience = true,
+      ValidateLifetime = true,
+      ValidateIssuerSigningKey = true,
+      ValidIssuer = builder.Configuration["JwtIssuer"],
+      ValidAudience = builder.Configuration["JwtAudience"],
+      IssuerSigningKey = new SymmetricSecurityKey(
+        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+  });
 
 var app = builder.Build();
 
@@ -52,6 +71,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAngular");
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapGet("/test", () => "API OK");
