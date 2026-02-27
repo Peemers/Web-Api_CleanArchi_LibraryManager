@@ -3,7 +3,9 @@ using Scalar.AspNetCore;
 using LibraryManager.Infrastructure.DataBase;
 using LibraryManager.Core.Interfaces.Repositories;
 using LibraryManager.Core.Interfaces.Services;
+using LibraryManager.Core.Interfaces.Tools;
 using LibraryManager.Core.Services.Data;
+using LibraryManager.Core.Services.Tools;
 using LibraryManager.Infrastructure.Repositories; // Vérifie que LivreService est bien ici
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,7 @@ builder.Services.AddCors(options =>
 //Services de base
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
 

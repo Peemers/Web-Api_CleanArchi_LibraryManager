@@ -4,13 +4,15 @@ using LibraryManager.Core.DTOs.Requests.UserRequest;
 using LibraryManager.Core.DTOs.Responces.UserResponse;
 using LibraryManager.Core.Interfaces.Repositories;
 using LibraryManager.Core.Interfaces.Services;
+using LibraryManager.Core.Interfaces.Tools;
 using LibraryManager.Core.Mappers;
+using LibraryManager.Core.Services.Tools;
 using LibraryManager.Domain.Entities;
 using LibraryManager.Domain.Enums;
 
 namespace LibraryManager.Core.Services.Data;
 
-public class UserService(IUserRepository userRepository) : BaseService<User>(userRepository), IUserService
+public class UserService(IUserRepository userRepository, IPasswordHasher passwordHasher) : BaseService<User>(userRepository), IUserService
 {
   public async Task<UserResponceDto?> GetByEmailAsync(string email)
   {
@@ -39,6 +41,7 @@ public class UserService(IUserRepository userRepository) : BaseService<User>(use
     }
 
     var userEntity = dto.ToEntity();
+    userEntity.PasswordHash = passwordHasher.hash(dto.PasswordHash);
     var createdUser = await base.AddAsync(userEntity);
 
     return createdUser.ToResponseDto(); // Retourne le DTO
