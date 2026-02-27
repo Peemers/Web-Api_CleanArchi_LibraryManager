@@ -48,6 +48,6 @@ public class BaseRepository<T>(LibraryManagerContext _context) : IBaseRepository
 
   public async Task<bool> ExistsAsync(Guid id)
   {
-    return await Task.FromResult(_entities.Find(id) != null);
+    return await _entities.AnyAsync(e => e.Id == id);
   }
 }

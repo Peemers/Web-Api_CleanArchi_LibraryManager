@@ -31,7 +31,7 @@ public class LivreController : ControllerBase
   [HttpPost]
   public async Task<IActionResult> PostLivre(LivreRequestDTO dto)
   {
-    // appelle de la méthode que l'on a créée spécifiquement pour les DTOs
+    // appelle de la méthode que l'on a créée spécifiquement pour les DTO
     var livreCree = await _livreService.CreateFromDtoAsync(dto);
 
     // On renvoie un DTO de réponse, pas l'entité brute
@@ -54,10 +54,17 @@ public class LivreController : ControllerBase
   }
 
   [HttpPut("{id}")]
-  public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Livre livre)
+  public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] LivreRequestDTO dto)
   {
-    if (id != livre.Id) return BadRequest("L'ID ne correspond pas");
-    await _livreService.UpdateAsync(livre);
+    Livre? livreExist = await _livreService.GetByIdAsync(id);
+    if (livreExist == null) return NotFound("Livre introuvable");
+    
+    livreExist.Nom =  dto.Nom;
+    livreExist.Auteur = dto.Auteur;
+    livreExist.NbPages = dto.NbPages;
+    livreExist.DateDeSortie = dto.DateDeSortie;
+    
+    await _livreService.UpdateAsync(livreExist);
     return NoContent();
   }
 

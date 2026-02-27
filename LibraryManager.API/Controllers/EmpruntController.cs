@@ -20,7 +20,7 @@ namespace LibraryManager.API.Controllers
       _empruntService = empruntService;
     }
 
-    [HttpGet]
+    [HttpGet ("GetAll")]
     public async Task<IActionResult> GetAllAsync()
     {
       return Ok(await _empruntService.GetAllAsync());
@@ -33,8 +33,7 @@ namespace LibraryManager.API.Controllers
       return Ok(await _empruntService.GetByIdAsync(id));
     }
 
-    [HttpPost]
-    [Route("api/[controller]")]
+    [HttpPost ("Emprunter")]
     public async Task<IActionResult> EmprunterLivreAsync([FromBody] EmpruntRequestDto dto)
     {
       var emprunt = await _empruntService.EmprunterLivreAsync(dto.LivreId, dto.UserId);

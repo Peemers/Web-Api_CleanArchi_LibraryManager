@@ -59,12 +59,9 @@ public class UserService(IUserRepository userRepository) : BaseService<User>(use
         user.Role = role;
         await base.UpdateAsync(user);
       }
-      
-      user.Role = role;
-      await base.UpdateAsync(user);
     }
     
-    return user.ToResponseDto();
+    return user!.ToResponseDto();
   }
 
   public async Task<UserResponceDto> UpdateEmailAsync(Guid userId, string nouveauEmail)

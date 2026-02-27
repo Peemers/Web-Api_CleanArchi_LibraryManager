@@ -19,8 +19,11 @@ public class BaseService<T>(IBaseRepository<T> baseRepository) : IBaseService<T>
 
   public virtual async Task DeleteAsync(Guid id)
   {
-    var livres = await baseRepository.GetByIdAsync(id) ?? throw new DirectoryNotFoundException("livre not found");
-
+    T? entity = await GetByIdAsync(id);
+    if (entity == null)
+    {
+      throw new KeyNotFoundException("No entity found with id: " + id);
+    }
     await baseRepository.DeleteAsync(id);
   }
 
