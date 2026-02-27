@@ -12,7 +12,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     builder.HasKey(user => user.Id);
     builder.Property(user => user.Email).IsRequired().HasMaxLength(150);
     builder.HasIndex(user => user.Email).IsUnique();
-    builder.Property(user => user.PasswordHash).IsRequired();
+    builder.Property(user => user.Password).IsRequired();
     builder.Property(user => user.DateCreation).HasDefaultValueSql("GETDATE()");
   }
 }

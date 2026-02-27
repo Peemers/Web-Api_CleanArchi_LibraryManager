@@ -55,7 +55,7 @@ public class UserService(
     string hashed = passwordHasher.Hash(dto.Password)!;
     Console.WriteLine($"Hash généré pour la base : {hashed}");
     
-    userEntity.PasswordHash = hashed;
+    userEntity.Password = hashed;
     
     var createdUser = await base.AddAsync(userEntity);
     return createdUser.ToResponseDto();
@@ -90,7 +90,7 @@ public class UserService(
       return Result<LoginResponceDto>.Failure("Email ou MDP incorrect");
     }
 
-    bool isPasswordValid = passwordHasher.Verify(dto.Password, user.PasswordHash);
+    bool isPasswordValid = passwordHasher.Verify(dto.Password, user.Password);
   
     if (!isPasswordValid)
     {

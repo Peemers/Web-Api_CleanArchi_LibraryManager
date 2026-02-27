@@ -11,7 +11,7 @@ public static class UserMappers
     return new User
     {
       Email = dto.Email,
-      PasswordHash = string.Empty,
+      Password = string.Empty,
       FirstName = dto.FirstName ?? string.Empty,
       LastName = dto.LastName ?? string.Empty,
     };
