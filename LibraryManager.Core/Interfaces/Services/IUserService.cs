@@ -13,5 +13,5 @@ public interface IUserService : IBaseService<User>
   Task<UserResponceDto> CreateByDtoAsync(RegisterRequestDto dto);
   Task<UserResponceDto> UpdateEmailAsync(Guid userId, string newEmail);
   Task<UserResponceDto> ChangeRoleAsync(Guid userId, UsersRoles role);
-  Task<Result<UserResponceDto>> LoginAsync(LoginRequestDto dto);
+  Task<Result<LoginResponceDto>> LoginAsync(LoginRequestDto dto);
 }

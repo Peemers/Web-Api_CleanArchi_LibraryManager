@@ -13,7 +13,10 @@ using LibraryManager.Domain.Enums;
 
 namespace LibraryManager.Core.Services.Data;
 
-public class UserService(IUserRepository userRepository, IPasswordHasher passwordHasher) : BaseService<User>(userRepository), IUserService
+public class UserService(
+  IUserRepository userRepository,
+  IPasswordHasher passwordHasher,
+  IJwtProvider jwtProvider) : BaseService<User>(userRepository), IUserService
 {
   public async Task<UserResponceDto?> GetByEmailAsync(string email)
   {
@@ -68,15 +71,21 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
     return user!.ToResponseDto();
   }
 
-  public async Task<Result<UserResponceDto>> LoginAsync(LoginRequestDto dto)
+  public async Task<Result<LoginResponceDto>> LoginAsync(LoginRequestDto dto)
   {
     User? user = await userRepository.GetUserByEmail(dto.Email);
 
     if (user == null || !passwordHasher.Verify(dto.PasswordHash, user.PasswordHash))
     {
-      return Result<UserResponceDto>.Failure("Email ou MDP incorrect");
+      return Result<LoginResponceDto>.Failure("Email ou MDP incorrect");
     }
-    return Result<UserResponceDto>.Success(user.ToResponseDto());
+
+    string token = jwtProvider.Generate(user);
+    return Result<LoginResponceDto>.Success(new LoginResponceDto
+    {
+      User = user.ToResponseDto(),
+      Token = token
+    });
   }
 
   public async Task<UserResponceDto> UpdateEmailAsync(Guid userId, string nouveauEmail)
