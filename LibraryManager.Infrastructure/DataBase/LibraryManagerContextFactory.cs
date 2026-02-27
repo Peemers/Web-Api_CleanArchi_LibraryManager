@@ -13,10 +13,10 @@ public class LibraryManagerContextFactory
   
   public LibraryManagerContext CreateDbContext(string[] args)
   {
-    var apiPath = Path.Combine(Directory.GetCurrentDirectory(), "../LibraryManager.Api");
+    var apiPath = Path.Combine(Directory.GetCurrentDirectory(), "../LibraryManager.API");
     
     IConfiguration configuration = new ConfigurationBuilder()
-      .SetBasePath(Directory.GetCurrentDirectory())
+      .SetBasePath(apiPath)
       .AddJsonFile("appsettings.json")
       .AddJsonFile("appsettings.Development.json", optional: true)
       .Build();

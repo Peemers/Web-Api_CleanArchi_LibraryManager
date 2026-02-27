@@ -4,6 +4,8 @@ using LibraryManager.Core.DTOs.Responces.UserResponse;
 using LibraryManager.Core.Interfaces.Services;
 using LibraryManager.Core.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
+using NuGet.DependencyResolver;
 
 
 namespace LibraryManager.API.Controllers;
@@ -19,11 +21,22 @@ public class UserController : ControllerBase
     _userService = userService;
   }
 
-  [HttpGet]
+  [HttpGet ("GetUsers")]
   public async Task<ActionResult<IEnumerable<UserResponceDto>>> GetUsers()
   {
     var usersDto = await _userService.GetAllAsync();
     return Ok(usersDto);
+  }
+
+  [HttpPost("Login")]
+  public async Task<ActionResult<UserResponceDto>> Login([FromBody] LoginRequestDto dto)
+  {
+    var result = await _userService.LoginAsync(dto);
+    if (!result.IsSuccess)
+    {
+      return Unauthorized(result.ErrorMessage);
+    }
+    return Ok(result.Value);
   }
 
   [HttpGet("email/{email}")]
@@ -36,7 +49,7 @@ public class UserController : ControllerBase
     return Ok(userDto);
   }
 
-  [HttpPost]
+  [HttpPost ("CreateUser")]
   public async Task<ActionResult<UserResponceDto>> CreateUser([FromBody] RegisterRequestDto dto)
   {
     var userDto = await _userService.CreateByDtoAsync(dto);

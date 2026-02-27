@@ -1,4 +1,5 @@
-﻿using LibraryManager.Core.DTOs.Requests.UserRequest;
+﻿using LibraryManager.Core.Common;
+using LibraryManager.Core.DTOs.Requests.UserRequest;
 using LibraryManager.Core.DTOs.Responces.UserResponse;
 using LibraryManager.Domain.Entities;
 using LibraryManager.Domain.Enums;
@@ -12,4 +13,5 @@ public interface IUserService : IBaseService<User>
   Task<UserResponceDto> CreateByDtoAsync(RegisterRequestDto dto);
   Task<UserResponceDto> UpdateEmailAsync(Guid userId, string newEmail);
   Task<UserResponceDto> ChangeRoleAsync(Guid userId, UsersRoles role);
+  Task<Result<UserResponceDto>> LoginAsync(LoginRequestDto dto);
 }

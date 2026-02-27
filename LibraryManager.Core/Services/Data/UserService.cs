@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using LibraryManager.Core.Common;
 using LibraryManager.Core.DTOs.Requests;
 using LibraryManager.Core.DTOs.Requests.UserRequest;
 using LibraryManager.Core.DTOs.Responces.UserResponse;
@@ -41,7 +42,7 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
     }
 
     var userEntity = dto.ToEntity();
-    userEntity.PasswordHash = passwordHasher.hash(dto.PasswordHash);
+    userEntity.PasswordHash = passwordHasher.Hash(dto.PasswordHash)!;
     var createdUser = await base.AddAsync(userEntity);
 
     return createdUser.ToResponseDto(); // Retourne le DTO
@@ -65,6 +66,17 @@ public class UserService(IUserRepository userRepository, IPasswordHasher passwor
     }
     
     return user!.ToResponseDto();
+  }
+
+  public async Task<Result<UserResponceDto>> LoginAsync(LoginRequestDto dto)
+  {
+    User? user = await userRepository.GetUserByEmail(dto.Email);
+
+    if (user == null || !passwordHasher.Verify(dto.PasswordHash, user.PasswordHash))
+    {
+      return Result<UserResponceDto>.Failure("Email ou MDP incorrect");
+    }
+    return Result<UserResponceDto>.Success(user.ToResponseDto());
   }
 
   public async Task<UserResponceDto> UpdateEmailAsync(Guid userId, string nouveauEmail)
